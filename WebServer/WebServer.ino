@@ -20,7 +20,6 @@
 #include "Sensors_Servo.h"
 #include <SPI.h>
 #include <Ethernet.h>
-#include <SD.h>
 
 // Enter a MAC address and IP address for your controller below.
 // The IP address will be dependent on your local network:
@@ -34,7 +33,6 @@ IPAddress ip(192, 168, 2, 205);
 // (port 80 is default for HTTP):
 EthernetServer server(80);
 
-File webFile;
 
 // prototypes
 void parseRequest(char * HTTP_req);
@@ -55,19 +53,9 @@ void setup() {
   Serial.print(F("server is at "));
   Serial.println(Ethernet.localIP());
 
-  // initialize SD card
-  Serial.println(F("Initializing SD card..."));
-  if (!SD.begin(4)) {
-      Serial.println(F("ERROR - SD card initialization failed!"));
-      return;    // init failed
-  }
-  Serial.println(F("SUCCESS - SD card initialized."));
-  // check for index.htm file
-  if (!SD.exists("index.htm")) {
-      Serial.println(F("ERROR - Can't find index.htm file!"));
-      return;  // can't find index file
-  }
-  Serial.println(F("SUCCESS - Found index.htm file."));
+  // disable cd
+  pinMode(4, OUTPUT);
+  digitalWrite(4, HIGH);
 
   Serial.println(F("Initialization Done."));
   Serial.println(F("================================"));
@@ -119,17 +107,21 @@ void processWebServer()
                 client.println();
                 // send web page
                 //Serial.println(FreeRam());
-                webFile = SD.open("index.htm", FILE_READ);        // open web page file
-                if (webFile) {
-                    while(webFile.available()) {
-                        client.write(webFile.read()); // send web page to client
-                    }
-                    webFile.close();
-                }
-                else {
-                  Serial.println(F("ERROR - Can't open index.htm file!"));
-                  return;
-                }
+                client.println(F("<HTML>"));
+                client.println(F("<META HTTP-EQUIV=\"refresh\" CONTENT=\"5 url='192.168.2.205'\">"));
+                client.println(F("<HEAD>"));
+                client.println(F("<TITLE>Smartsettia Demo</TITLE>"));
+                client.println(F("</HEAD>"));
+                client.println(F("<BODY>"));
+                client.println(F("<H1>Smartsettia Demo</H1>"));
+                client.println(F("<hr />"));
+                client.println(F("<br />"));
+                client.println(F("form action=\"/action.php\" method=\"get\""));
+                 client.println(F("<button name=\"cover\" type=\"submit\" value=\"close\">Close</button>"));
+                 client.println(F("<button name=\"cover\" type=\"submit\" value=\"open\">Open</button>"));
+                client.println(F("</form>"));
+                client.println(F("</BODY>"));
+                client.println(F("</HTML>"));
                 
                 break;
             }
