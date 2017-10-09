@@ -3,7 +3,6 @@
 #define SENSORS_SERVO
 
 #define SWITCH_1_PIN  5
-#define SWITCH_2_PIN  6
 #define SERVO_PIN     9
 
 //http://www.servodatabase.com/servo/towerpro/mg90
@@ -11,7 +10,7 @@
 #define SERVO_PULSE_MIN 500
 #define SERVO_MAX 180
 #define SERVO_MIN 0
-#define SERVO_DELAY 20 // delay between increments. aka speed 
+#define SERVO_DELAY 20 // delay between increments. aka speed
 #define SERVO_INCREMENT 1
 
 

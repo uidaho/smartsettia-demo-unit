@@ -16,11 +16,10 @@ void initSensors()
 {
   Serial.println(F("Initializing pins"));
   pinMode(SWITCH_1_PIN, INPUT);
-  pinMode(SWITCH_2_PIN, INPUT);
   pinMode(SERVO_PIN, OUTPUT);
 
   Serial.println(F("Initializing servo"));
-  myservo.attach(SERVO_PIN, SERVO_PULSE_MIN, SERVO_PULSE_MAX); 
+  myservo.attach(SERVO_PIN, SERVO_PULSE_MIN, SERVO_PULSE_MAX);
   delay(10);
   ServoSet(SERVO_OPEN);
 }
@@ -28,7 +27,17 @@ void initSensors()
 
 void getSwitches()
 {
+  static int val_prev = 0;
+  int val = digitalRead(SWITCH_1_PIN);
+  if (val == 1 && val_prev == 0) {
+    if (servo_state == SERVO_OPEN)
+      ServoSet(SERVO_CLOSE);
+    else if (servo_state == SERVO_CLOSE)
+      ServoSet(SERVO_OPEN);
+    // else its moving. ignoring
+  }
 
+  val_prev = val;
 }
 
 void ServoSet(int newstate)
@@ -38,7 +47,7 @@ void ServoSet(int newstate)
   else
     servo_state = SERVO_CLOSING;
 
-  myservo.attach(SERVO_PIN, SERVO_PULSE_MIN, SERVO_PULSE_MAX); 
+  myservo.attach(SERVO_PIN, SERVO_PULSE_MIN, SERVO_PULSE_MAX);
 }
 
 void ServoUpdate()
@@ -55,7 +64,7 @@ void ServoUpdate()
 
   // We waited long enough. Lets do some work
   previousMillis = currentMillis;
-  
+
   if (servo_state == SERVO_OPEN || servo_state == SERVO_CLOSE)
     return;  // already open or close. Do nothing
 
@@ -65,7 +74,7 @@ void ServoUpdate()
     if (new_pos >= SERVO_MAX) {   // if over max, set to max, state now close
       new_pos = SERVO_MAX;
       servo_state = SERVO_CLOSE;
-      myservo.detach(); 
+      myservo.detach();
     }
     myservo.write(new_pos);
     servo_pos = new_pos;
@@ -75,11 +84,9 @@ void ServoUpdate()
     if (new_pos <= SERVO_MIN) {   // if under min, set to min, state now open
       new_pos = SERVO_MIN;
       servo_state = SERVO_OPEN;
-      myservo.detach(); 
+      myservo.detach();
     }
     myservo.write(new_pos);
     servo_pos = new_pos;
   }
 }
-
-
