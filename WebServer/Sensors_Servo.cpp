@@ -42,10 +42,14 @@ void getSwitches()
 
 void ServoSet(int newstate)
 {
-  if (newstate == SERVO_OPEN)
+  if (newstate == SERVO_OPEN) {
     servo_state = SERVO_OPENING;
-  else
+    Serial.println("toggle open");
+  }
+  else {
     servo_state = SERVO_CLOSING;
+    Serial.println("toggle close");
+  }
 
   myservo.attach(SERVO_PIN, SERVO_PULSE_MIN, SERVO_PULSE_MAX);
 }

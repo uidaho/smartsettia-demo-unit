@@ -66,6 +66,7 @@ void loop() {
   processWebServer();
   ServoUpdate();
   getSwitches();
+  delay(20);
 }
 
 
@@ -116,7 +117,7 @@ void processWebServer()
                 client.println(F("<H1>Smartsettia Demo</H1>"));
                 client.println(F("<hr />"));
                 client.println(F("<br />"));
-                client.println(F("form action=\"/action.php\" method=\"get\""));
+                client.println(F("<form action=\"/action.php\" method=\"get\">"));
                  client.println(F("<button name=\"cover\" type=\"submit\" value=\"close\">Close</button>"));
                  client.println(F("<button name=\"cover\" type=\"submit\" value=\"open\">Open</button>"));
                 client.println(F("</form>"));
